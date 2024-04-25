@@ -1,0 +1,494 @@
+
+import condition;
+
+enum TestType {
+    TT_NA, // not applicable (trainings items)
+    TT_1,
+    TT_2,
+    TT_3,
+    TT_4,
+    TT_5
+};
+
+enum ResponseType {
+    FIRST,
+    SECOND
+};
+
+
+// Item table record.
+record TrainItem
+{
+    int         id;             // item id
+    int         block;          // the block of the stimuli 1, 2 or 3
+    int         nth_rep;        // the nth rep within the block
+    CondEntropy entropy;        // entropy of item
+    CondLang    language;       // L1 or L2
+    string      sndfn;          // stimulus word sound filename
+};
+
+void print_train_items(TrainItem[] items, bool header) {
+    int i = 0;
+    if (header)
+        println("id\tblock\tnth_rep\tentropy\tlanguage\tword");
+
+    while (i < items.size) {
+        TrainItem it = items[i];
+        println("" + it.id + "\t"
+                   + it.block + "\t"
+                   + it.nth_rep + "\t"
+                   + it.entropy + "\t"
+                   + it.language + "\t"
+                   + it.sndfn
+               );
+        i++;
+    }
+}
+
+
+/*
+ * The training stimuli are presented in these 3 lists, each
+ * list corresponds to a block.
+ */
+TrainItem[] training_items1 = {};
+TrainItem[] training_items2 = {};
+TrainItem[] training_items3 = {};
+
+
+// Training items of language 1 with low entropy
+TrainItem[] items_low_l1 =
+{
+    {1 , 1, 1, EN_LOW, LANG_L1, "naf_hog_tep"},
+    {2 , 1, 1, EN_LOW, LANG_L1, "naf_zuk_tep"},
+    {3 , 1, 1, EN_LOW, LANG_L1, "naf_huf_tep"},
+    {4 , 1, 1, EN_LOW, LANG_L1, "naf_jal_tep"},
+    {5 , 1, 1, EN_LOW, LANG_L1, "naf_huf_tep"},
+    {6 , 1, 1, EN_LOW, LANG_L1, "naf_jal_tep"},
+    {7 , 1, 1, EN_LOW, LANG_L1, "wop_hog_bif"},
+    {8 , 1, 1, EN_LOW, LANG_L1, "wop_zuk_bif"},
+    {9 , 1, 1, EN_LOW, LANG_L1, "wop_jik_bif"},
+    {10, 1, 1, EN_LOW, LANG_L1, "wop_nup_bif"},
+    {11, 1, 1, EN_LOW, LANG_L1, "wop_jik_bif"},
+    {12, 1, 1, EN_LOW, LANG_L1, "wop_nup_bif"},
+    {13, 1, 1, EN_LOW, LANG_L1, "pem_hog_dos"},
+    {14, 1, 1, EN_LOW, LANG_L1, "pem_zuk_dos"},
+    {15, 1, 1, EN_LOW, LANG_L1, "pem_hog_dos"},
+    {16, 1, 1, EN_LOW, LANG_L1, "pem_zuk_dos"},
+    {17, 1, 1, EN_LOW, LANG_L1, "pem_hog_dos"},
+    {18, 1, 1, EN_LOW, LANG_L1, "pem_zuk_dos"},
+    {19, 1, 1, EN_LOW, LANG_L1, "mip_ves_sot"},
+    {20, 1, 1, EN_LOW, LANG_L1, "mip_kof_sot"},
+    {21, 1, 1, EN_LOW, LANG_L1, "mip_ves_sot"},
+    {22, 1, 1, EN_LOW, LANG_L1, "mip_kof_sot"},
+    {23, 1, 1, EN_LOW, LANG_L1, "mip_ves_sot"},
+    {24, 1, 1, EN_LOW, LANG_L1, "mip_kof_sot"},
+};
+
+
+// Training items of language 1 with high entropy
+TrainItem[] items_high_l1 =
+{
+    {1,  1, 1, EN_HIGH, LANG_L1, "naf_hog_tep"},
+    {2,  1, 1, EN_HIGH, LANG_L1, "naf_zuk_tep"},
+    {3,  1, 1, EN_HIGH, LANG_L1, "naf_huf_tep"},
+    {4,  1, 1, EN_HIGH, LANG_L1, "naf_jal_tep"},
+    {5,  1, 1, EN_HIGH, LANG_L1, "naf_jik_tep"},
+    {6,  1, 1, EN_HIGH, LANG_L1, "naf_nup_tep"},
+    {7,  1, 1, EN_HIGH, LANG_L1, "wop_hog_bif"},
+    {8,  1, 1, EN_HIGH, LANG_L1, "wop_zuk_bif"},
+    {9,  1, 1, EN_HIGH, LANG_L1, "wop_huf_bif"},
+    {0,  1, 1, EN_HIGH, LANG_L1, "wop_jal_bif"},
+    {11, 1, 1, EN_HIGH, LANG_L1, "wop_jik_bif"},
+    {12, 1, 1, EN_HIGH, LANG_L1, "wop_nup_bif"},
+    {13, 1, 1, EN_HIGH, LANG_L1, "pem_hog_dos"},
+    {14, 1, 1, EN_HIGH, LANG_L1, "pem_zuk_dos"},
+    {15, 1, 1, EN_HIGH, LANG_L1, "pem_hog_dos"},
+    {16, 1, 1, EN_HIGH, LANG_L1, "pem_zuk_dos"},
+    {17, 1, 1, EN_HIGH, LANG_L1, "pem_hog_dos"},
+    {18, 1, 1, EN_HIGH, LANG_L1, "pem_zuk_dos"},
+    {19, 1, 1, EN_HIGH, LANG_L1, "mip_ves_sot"},
+    {20, 1, 1, EN_HIGH, LANG_L1, "mip_kof_sot"},
+    {21, 1, 1, EN_HIGH, LANG_L1, "mip_ves_sot"},
+    {22, 1, 1, EN_HIGH, LANG_L1, "mip_kof_sot"},
+    {23, 1, 1, EN_HIGH, LANG_L1, "mip_ves_sot"},
+    {24, 1, 1, EN_HIGH, LANG_L1, "mip_kof_sot"},
+}
+
+// Training items of language 2 with low entropy
+TrainItem[] items_low_l2 =
+{
+    {1 , 1, 1, EN_LOW, LANG_L2, "naf_hog_tep"},
+    {2 , 1, 1, EN_LOW, LANG_L2, "naf_zuk_tep"},
+    {3 , 1, 1, EN_LOW, LANG_L2, "naf_huf_tep"},
+    {4 , 1, 1, EN_LOW, LANG_L2, "naf_jal_tep"},
+    {5 , 1, 1, EN_LOW, LANG_L2, "naf_huf_tep"},
+    {6 , 1, 1, EN_LOW, LANG_L2, "naf_jal_tep"},
+    {7 , 1, 1, EN_LOW, LANG_L2, "wop_hog_bif"},
+    {8 , 1, 1, EN_LOW, LANG_L2, "wop_zuk_bif"},
+    {9 , 1, 1, EN_LOW, LANG_L2, "wop_jik_bif"},
+    {10, 1, 1, EN_LOW, LANG_L2, "wop_nup_bif"},
+    {11, 1, 1, EN_LOW, LANG_L2, "wop_jik_bif"},
+    {12, 1, 1, EN_LOW, LANG_L2, "wop_nup_bif"},
+    {13, 1, 1, EN_LOW, LANG_L2, "mip_hog_sot"},
+    {14, 1, 1, EN_LOW, LANG_L2, "mip_zuk_sot"},
+    {15, 1, 1, EN_LOW, LANG_L2, "mip_hog_sot"},
+    {16, 1, 1, EN_LOW, LANG_L2, "mip_zuk_sot"},
+    {17, 1, 1, EN_LOW, LANG_L2, "mip_hog_sot"},
+    {18, 1, 1, EN_LOW, LANG_L2, "mip_zuk_sot"},
+    {19, 1, 1, EN_LOW, LANG_L2, "pem_ves_dos"},
+    {20, 1, 1, EN_LOW, LANG_L2, "pem_kof_dos"},
+    {21, 1, 1, EN_LOW, LANG_L2, "pem_ves_dos"},
+    {22, 1, 1, EN_LOW, LANG_L2, "pem_kof_dos"},
+    {23, 1, 1, EN_LOW, LANG_L2, "pem_ves_dos"},
+    {24, 1, 1, EN_LOW, LANG_L2, "pem_kof_dos"},
+};
+
+// Training items of language 2 with high entropy
+TrainItem[] items_high_l2 =
+{
+    {1,  1, 1, EN_HIGH, LANG_L2, "naf_hog_tep"},
+    {2,  1, 1, EN_HIGH, LANG_L2, "naf_zuk_tep"},
+    {3,  1, 1, EN_HIGH, LANG_L2, "naf_huf_tep"},
+    {4,  1, 1, EN_HIGH, LANG_L2, "naf_jal_tep"},
+    {5,  1, 1, EN_HIGH, LANG_L2, "naf_jik_tep"},
+    {6,  1, 1, EN_HIGH, LANG_L2, "naf_nup_tep"},
+    {7,  1, 1, EN_HIGH, LANG_L2, "wop_hog_bif"},
+    {8,  1, 1, EN_HIGH, LANG_L2, "wop_zuk_bif"},
+    {9,  1, 1, EN_HIGH, LANG_L2, "wop_huf_bif"},
+    {0,  1, 1, EN_HIGH, LANG_L2, "wop_jal_bif"},
+    {11, 1, 1, EN_HIGH, LANG_L2, "wop_jik_bif"},
+    {12, 1, 1, EN_HIGH, LANG_L2, "wop_nup_bif"},
+    {13, 1, 1, EN_HIGH, LANG_L2, "mip_hog_sot"},
+    {14, 1, 1, EN_HIGH, LANG_L2, "mip_zuk_sot"},
+    {15, 1, 1, EN_HIGH, LANG_L2, "mip_hog_sot"},
+    {16, 1, 1, EN_HIGH, LANG_L2, "mip_zuk_sot"},
+    {17, 1, 1, EN_HIGH, LANG_L2, "mip_hog_sot"},
+    {18, 1, 1, EN_HIGH, LANG_L2, "mip_zuk_sot"},
+    {19, 1, 1, EN_HIGH, LANG_L2, "pem_ves_dos"},
+    {20, 1, 1, EN_HIGH, LANG_L2, "pem_kof_dos"},
+    {21, 1, 1, EN_HIGH, LANG_L2, "pem_ves_dos"},
+    {22, 1, 1, EN_HIGH, LANG_L2, "pem_kof_dos"},
+    {23, 1, 1, EN_HIGH, LANG_L2, "pem_ves_dos"},
+    {24, 1, 1, EN_HIGH, LANG_L2, "pem_kof_dos"},
+}
+
+void append_train_item(TrainItem[] array, TrainItem item) {
+    array.size = array.size + 1;
+    array[array.size - 1] = item;
+}
+
+void append_test_item(TestItem[] array, TestItem item) {
+    array.size = array.size + 1;
+    array[array.size - 1] = item;
+}
+
+// No two subsequent items should have the same sound file.
+bool
+check_train_items(TrainItem[] input) {
+    int i = 1;
+    if (input.size != 96) {
+        print_error("Oops the training item block doesn't contain 96 items.\n");
+    }
+
+    while (i < input.size) {
+        if (input[i].sndfn == input[i-1].sndfn)
+            return false;
+        i++;
+    }
+    return input.size == 96;
+}
+
+// Puts the 24 train items in a randomized fashion in the block 4 times. So
+// The final block will contain 96 items
+bool
+train_items_append_block(TrainItem[] output, TrainItem[] input, int block) {
+
+    bool meets_constraints = false;
+    int num_tries = 1000;
+    int num = 0;
+
+    while (!meets_constraints && num < num_tries) {
+        int i = 0;
+        output.size = 0;
+
+        input.shuffle(0, -1);
+        while (i < input.size) {
+            TrainItem item = input[i];
+            item.block = block;
+            append_train_item(output, item);
+            i++;
+        }
+
+        i = 0;
+        input.shuffle(0, -1);
+        while (i < input.size) {
+            TrainItem item = input[i];
+            item.block = block;
+            append_train_item(output, item);
+            i++;
+        }
+        
+        i = 0;
+        input.shuffle(0, -1);
+        while (i < input.size) {
+            TrainItem item = input[i];
+            item.block = block;
+            append_train_item(output, item);
+            i++;
+        }
+        
+        i = 0;
+        input.shuffle(0, -1);
+        while (i < input.size) {
+            TrainItem item = input[i];
+            item.block = block;
+            append_train_item(output, item);
+            i++;
+        }
+        num++;
+        meets_constraints = check_train_items(output);
+    }
+
+    return meets_constraints;
+}
+
+// If we only had associative arrays...
+void
+count_repetitions(TrainItem[] items)
+{
+    int i = 0;
+    while (i < items.size) {
+        string needle = items[i].sndfn;
+        int j = 0;
+        int num_found = 0;
+        while (j <= i) { // Count the needle too.
+            if (needle == items[j].sndfn) {
+                num_found++;
+            }
+            j++;
+        }
+        items[i].nth_rep = num_found;
+        i++;
+    }
+}
+
+/*
+ * Distributes all training items over the three separate lists/blocks
+ */
+void prepare_training_lists(TrainItem[] input) {
+    train_items_append_block(training_items1, input, 1);
+    train_items_append_block(training_items2, input, 2);
+    train_items_append_block(training_items3, input, 3);
+    count_repetitions(training_items1);
+    count_repetitions(training_items2);
+    count_repetitions(training_items3);
+}
+
+/*
+ * Selects the right source list for the current conditions and
+ * prepares the training lists.
+ */
+void prepare_training_items()
+{
+    TrainItem[] training_items;
+
+    if (chosen_entropy == EN_HIGH) {
+        if (chosen_language == LANG_L1)
+            training_items = items_high_l1;
+        else 
+            training_items = items_high_l2;
+    }
+    else {
+        if (chosen_language == LANG_L1)
+            training_items = items_low_l1;
+        else
+            training_items = items_low_l2;
+    }
+
+    prepare_training_lists(training_items);
+}
+
+/*
+ * Test items
+ */
+record TestItem {
+    int         id;
+    TestType    type;
+    string      fn;
+};
+
+void print_test_item(TestItem item) {
+    println(string(item.id)   + " " +
+            string(item.type) + " " +
+            item.fn
+            );
+}
+
+void print_test_items(TestItem[] items, bool header) {
+    int i = 0;
+    if (header)
+        println("id list_ab grammar1 file1 gramar2 file2");
+
+    while (i < items.size) {
+        print_test_item(items[i]);
+        i++;
+    }
+}
+
+// Test items L1
+TestItem[] test_items_l1_1 = {
+    {1, TT_1, "1.pem_huf_dos"},
+    {2, TT_1, "1.pem_jal_dos"},
+    {3, TT_1, "1.pem_jik_dos"},
+    {4, TT_1, "1.pem_nup_dos"},
+}
+
+TestItem[] test_items_l1_2 = {
+    {1, TT_2, "2.naf_bug_tep"},
+    {2, TT_2, "2.naf_zim_tep"},
+    {3, TT_2, "2.pem_bug_dos"},
+    {4, TT_2, "2.pem_zim_dos"},
+}
+
+TestItem[] test_items_l1_3 = {
+    {1, TT_3, "3.naf_hog_tep"},
+    {2, TT_3, "3.naf_zuk_tep"},
+    {3, TT_3, "3.wop_hog_bif"},
+    {4, TT_3, "3.wop_zuk_bif"},
+}
+
+TestItem[] test_items_l1_4 = {
+    {1, TT_4, "4.mip_huf_sot"},
+    {2, TT_4, "4.mip_jik_sot"},
+    {3, TT_4, "4.mip_jal_sot"},
+    {4, TT_4, "4.mip_nup_sot"},
+}
+
+TestItem[] test_items_l1_5 = {
+    {1, TT_5, "5.bif_wop_zuk"},
+    {2, TT_5, "5.hog_bif_wop"},
+    {3, TT_5, "5.tep_naf_hog"},
+    {4, TT_5, "5.zuk_tep_naf"},
+};
+
+// Test items L2
+TestItem[] test_items_l2_1 = {
+    {1, TT_1, "1.mip_huf_sot"},
+    {2, TT_1, "1.mip_jal_sot"},
+    {3, TT_1, "1.mip_jik_sot"},
+    {4, TT_1, "1.mip_nup_sot"},
+};
+
+TestItem[] test_items_l2_2 = {
+    {1, TT_2, "2.mip_bug_sot"},
+    {2, TT_2, "2.mip_zim_sot"},
+    {3, TT_2, "2.naf_bug_tep"},
+    {4, TT_2, "2.naf_zim_tep"},
+};
+
+TestItem[] test_items_l2_3 = {
+    {1, TT_3, "3.naf_hog_tep"},
+    {2, TT_3, "3.naf_zuk_tep"},
+    {3, TT_3, "3.wop_hog_bif"},
+    {4, TT_3, "3.wop_zuk_bif"},
+};
+
+TestItem[] test_items_l2_4 = {
+    {1, TT_4, "4.pem_huf_dos"},
+    {2, TT_4, "4.pem_jal_dos"},
+    {3, TT_4, "4.pem_jik_dos"},
+    {4, TT_4, "4.pem_nup_dos"},
+};
+
+TestItem[] test_items_l2_5 = {
+    {1, TT_5, "5.bif_wop_zuk"},
+    {2, TT_5, "5.hog_bif_wop"},
+    {3, TT_5, "5.tep_naf_hog"},
+    {4, TT_5, "5.zuk_tep_naf"},
+};
+
+/*The test items above are going to be distributed of the lists below*/ 
+TestItem [] test_items1 = {};
+TestItem [] test_items2 = {};
+TestItem [] test_items3 = {};
+
+TestItem
+pop_test_item(TestItem[] stack) {
+    TestItem ret = stack[stack.size - 1];
+    stack.size = stack.size -1;
+    return ret;
+}
+
+/*
+ * prepares the testitems
+ */
+void
+prepare_test_stims() {
+    TestItem[] items_1;
+    TestItem[] items_2;
+    TestItem[] items_3;
+    TestItem[] items_4;
+    TestItem[] items_5;
+
+    if (chosen_language == LANG_L1) {
+        items_1 = test_items_l1_1;
+        items_2 = test_items_l1_2;
+        items_3 = test_items_l1_3;
+        items_4 = test_items_l1_4;
+        items_5 = test_items_l1_5;
+    }
+    else if (chosen_language == LANG_L2) {
+        items_1 = test_items_l2_1;
+        items_2 = test_items_l2_2;
+        items_3 = test_items_l2_3;
+        items_4 = test_items_l2_4;
+        items_5 = test_items_l2_5;
+    }
+
+    items_1.shuffle(0, -1);
+    items_2.shuffle(0, -1);
+    items_3.shuffle(0, -1);
+    items_4.shuffle(0, -1);
+    items_5.shuffle(0, -1);
+
+    // prepare block 1
+    append_test_item(test_items1, pop_test_item(items_1));
+    append_test_item(test_items1, pop_test_item(items_2));
+    append_test_item(test_items1, pop_test_item(items_3));
+    append_test_item(test_items1, pop_test_item(items_4));
+    append_test_item(test_items1, pop_test_item(items_5));
+    
+    test_items1.shuffle(0, -1);
+
+    // prepare block 2
+    append_test_item(test_items2, pop_test_item(items_1));
+    append_test_item(test_items2, pop_test_item(items_2));
+    append_test_item(test_items2, pop_test_item(items_3));
+    append_test_item(test_items2, pop_test_item(items_4));
+    append_test_item(test_items2, pop_test_item(items_5));
+    
+    test_items2.shuffle(0, -1);
+
+    // prepare_block 3 with double the number of items
+    // The first 5 contain 1 of each type and the second 5 too.
+    append_test_item(test_items3, pop_test_item(items_1));
+    append_test_item(test_items3, pop_test_item(items_2));
+    append_test_item(test_items3, pop_test_item(items_3));
+    append_test_item(test_items3, pop_test_item(items_4));
+    append_test_item(test_items3, pop_test_item(items_5));
+    test_items3.shuffle(0, -1);
+    append_test_item(test_items3, pop_test_item(items_1));
+    append_test_item(test_items3, pop_test_item(items_2));
+    append_test_item(test_items3, pop_test_item(items_3));
+    append_test_item(test_items3, pop_test_item(items_4));
+    append_test_item(test_items3, pop_test_item(items_5));
+    test_items3.shuffle(5, -1);
+}
+
+/*
+ * Prepares the list for the three test blocks.
+ */
+void prepare_test_lists () {
+
+    prepare_test_stims();
+}

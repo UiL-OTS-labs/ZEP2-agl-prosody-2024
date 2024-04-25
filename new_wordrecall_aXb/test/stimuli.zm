@@ -1,0 +1,64 @@
+/******************************************************************************\
+FILE:           stimuli.zm
+AUTHOR:         Theo Veenker (UiL-OTS) <T.J.G.Veenker@uu.nl>
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Defines the formats of item table(s) and provides the actual content of
+the item table(s) i.e. stimulus information.
+
+
+HISTORY:
+2011-10-25 TV   Created.
+
+\******************************************************************************/
+
+
+// Symbolic definition of item type.
+enum ItemType
+{
+    YES,
+    NO,
+}
+
+
+// Item record used for the test phase item table.
+record TestItem
+{
+    int         id;             // item id
+    ItemType    type;           // item type
+    string      word;           // stimulus word
+}
+
+
+// Item table used in the test phase.
+//   index: item number
+TestItem[..] test_items =
+{
+    {1,  YES, "hog"},
+    {2,  YES, "nit"},
+    {3,  YES, "zuk"},
+    {4,  YES, "huf"},
+    {5,  YES, "jal"},
+    {6,  YES, "jik"},
+    {7,  YES, "nup"},
+    {8,  YES, "rak"},
+    {9,  YES, "toef"},
+    {10, YES, "dul"},
+    {11, YES, "ves"},
+    {12, YES, "kof"},
+
+    {13, NO,  "fas"},
+    {14, NO,  "fef"},
+    {15, NO,  "kes"},
+    {16, NO,  "wom"},
+    {17, NO,  "gop"},
+    {18, NO,  "bim"},
+    {19, NO,  "duk"},
+    {20, NO,  "lug"},
+    {21, NO,  "kog"},
+    {22, NO,  "raf"},
+    {23, NO,  "peg"},
+    {24, NO,  "ket"},
+};

@@ -1,0 +1,258 @@
+/******************************************************************************\
+FILE:           task.zm
+AUTHOR:         Theo Veenker <theo.veenker@beexy.nl>
+ADAPTED BY:     Silvia Radulescu <S.Radulescu@uu.nl>
+Last Modified:	March 15, 2015
+
+DESCRIPTION:
+
+Original script: Auditory Lexical Decision
+Actual script: Presents subject with an XXY training language (High Entropy or
+Low Entropy). There are three training blocks with auditory stimuli. After each
+training phase there is a short test phase, and at the end a final test.
+In the test phases, subject must indicate as quickly as possible whether the
+stimulus belongs to the training language or not.
+
+See readme.txt for more information.
+
+
+Global structure of this experiment phase:
+
+  - training 1
+	- test 1
+  - training 2
+	- test 2
+  - training 3
+	- test 3
+  - final test
+  - memory test 1
+  - memory test 2
+
+
+HISTORY:
+2011-10-25 TV   Created.
+
+\******************************************************************************/
+
+import defs;
+import stimuli;
+import shuffle;
+import output;
+import test_page;
+import condition;
+import global_texts;
+import instructions;
+
+
+Block task
+{
+
+    Block training_test_repetitions
+    {
+
+        entry()
+        {
+            num_cycles = NUM_TEST_TRAINING_REPETITIONS;
+        }
+
+        Part pre_training_instructions
+        {
+            entry()
+            {
+                string instructions;
+                if (training_test_repetitions.cycle == 0)
+                    instructions = PRE_TRAIN_INSTRUCTION;
+                else
+                    instructions = PRE_TRAIN_INSTRUCTION_SHORT;
+                pause_page.set_text(instructions, true);
+
+                pause_page.action(this);
+                control.enable_all_buttons(CONTINUE);
+            }
+        }
+
+        Block training
+        {
+            TrainItem        item;   // current item
+            TrainItem[]      train_items;
+
+            entry()
+            {
+
+                if (training_test_repetitions.cycle == 0)
+                    train_items = training_items1;
+                else if (training_test_repetitions.cycle == 1)
+                    train_items = training_items2;
+                else if (training_test_repetitions.cycle == 2)
+                    train_items = training_items3;
+                else
+                    train_items = null;
+
+                num_cycles = train_items.size;
+                if (have_flag("short")) // debugging only
+                    num_cycles = 6;
+
+                // Prepare test page: progress bar, feedback and prompt enabled.
+                train_page.setup(num_cycles);
+            }
+
+
+            exit()
+            {
+                train_page.cleanup();
+            }
+
+
+            Trial trial
+            {
+                entry()
+                {
+                    item = train_items[training.cycle];
+                    train_page.action(this, item, reference_time, -1);
+                }
+
+                exit()
+                {
+                    // Add new row to test output table.
+                    TestOutput output;
+                    output.step = "training";
+                    output.trial = training.cycle + 1;
+
+                    output.id = item.id;
+                    output.nth_rep = item.nth_rep;
+                    output.block = item.block;
+
+                    output.entropy = item.entropy;
+                    output.language = item.language;
+
+                    output.grp = selected_group;
+                    output.fn = item.sndfn;
+
+                    output.rating = -1;
+                    output.rt = -1;
+                    training_output_append(output);
+                }
+            }
+        }
+
+
+        Part
+        {
+            entry()
+            {
+                blank_page.action_auto(this, 500ms);
+            }
+        }
+
+
+        Part pre_test_instructions
+        {
+            entry()
+            {
+                string instructions;
+                if (training_test_repetitions.cycle == 0) {
+                    instructions = PRE_TEST_INSTRUCTION;
+                }
+                else
+                    instructions = PRE_TEST_INSTRUCTION_SHORT;
+
+                pause_page.set_text (instructions, true);
+
+                pause_page.action(this);
+                control.enable_all_buttons(CONTINUE);
+            }
+        }
+        
+        Part
+        {
+            entry()
+            {
+                blank_page.action_auto(this, 500ms);
+            }
+        }
+
+        Block test
+        {
+            TestItem        item;   // current item
+            TestItem[]      test_items;
+
+            entry()
+            {
+                if (training_test_repetitions.cycle == 0)
+                    test_items = test_items1;
+                else if (training_test_repetitions.cycle == 1)
+                    test_items = test_items2;
+                else if (training_test_repetitions.cycle == 2)
+                    test_items = test_items3;
+                else
+                    terminate "Unexpected block";
+
+                num_cycles = test_items.size;
+                if (have_flag("short"))
+                    num_cycles = 3;
+
+                // Prepare test page: progress bar enabled, feedback and prompt
+                // disabled.
+                test_page.setup(
+                        training_test_repetitions.cycle + 1,
+                        test.num_cycles);
+            }
+
+
+            exit()
+            {
+                test_page.cleanup();
+            }
+
+
+            Trial trial
+            {
+                entry()
+                {
+                    item = test_items[test.cycle];
+                    test_page.action(this, item, reference_time, test.cycle);
+                }
+
+                exit()
+                {
+                    TestOutput output;
+                    output.step = "test";
+                    output.trial = test.cycle + 1;
+
+                    output.id       = item.id;
+                    output.nth_rep  = training_test_repetitions.cycle + 1;
+                    output.block    = training_test_repetitions.cycle + 1;
+
+                    output.entropy  = chosen_entropy;
+                    output.language = chosen_language;
+
+                    output.grp      = selected_group;
+                    output.fn       = item.fn;
+                    output.type     = item.type;
+
+                    output.rating   = test_page.response.value;
+                    output.rt       = test_page.response.rt;
+
+                    test_output_append(output);
+                }
+            }
+        }
+
+        Part
+        {
+            on_event:entry()
+            {
+                blank_page.action_auto(this, 500ms);
+            }
+        }
+
+    }
+}
+
+
+void action(Part caller)
+{
+    // Activate the task. When the task is done, the registered caller
+    // (c.q. the main experiment object) will automatically be signalled.
+    task.enter(caller);
+}
