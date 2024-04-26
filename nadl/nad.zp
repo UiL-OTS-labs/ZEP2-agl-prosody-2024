@@ -32,7 +32,7 @@ Experiment experiment
         test::prepare_test_lists();
 
         if (have_flag("print-conditions")) {
-            test::print_conditions();
+            test::print_chosen_conditions(selected_group);
         }
 
 
