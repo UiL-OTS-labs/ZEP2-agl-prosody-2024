@@ -21,7 +21,12 @@ enum CondTestStims {
     STIM_NEW
 };
 
-enum CondCB{ // CounterBalance
+enum CondProsody {
+    PRO_FUNCTIONAL,
+    PRO_EMPHASIZED,
+}
+
+enum CondCB { // CounterBalance
     CBA,
     CBB
 }
@@ -29,44 +34,15 @@ enum CondCB{ // CounterBalance
 CondEntropy     chosen_entropy;
 CondLang        chosen_language;
 CondCB          chosen_cb_order;
+CondProsody     chosen_prosody;
 
-void init_conditions_from_test_group(TestGroup group) {
+void init_conditions(TestGroup group) {
+    chosen_cb_order = group == cba ? CBA : CBB;
 
-    if (
-        group == lo_l1_cba ||
-        group == hi_l1_cba ||
-        group == lo_l2_cba ||
-        group == hi_l2_cba
-        ) {
-        chosen_cb_order = CBA;
-    }
-    else {
-        chosen_cb_order = CBB;
-    }
-
-    if (
-        group == lo_l1_cba ||
-        group == lo_l2_cba ||
-        group == lo_l1_cbb ||
-        group == lo_l2_cbb
-        ) {
-        chosen_entropy = EN_LOW;
-    }
-    else {
-        chosen_entropy = EN_HIGH;
-    }
-
-    if (
-        group == lo_l1_cba ||
-        group == hi_l1_cba ||
-        group == lo_l1_cbb ||
-        group == hi_l1_cbb
-        ) {
-        chosen_language = LANG_L1;
-    }
-    else {
-        chosen_language = LANG_L2;
-    }
+    string s_entropy = expdb.participant.get_enum_field("entropy");
+    chosen_entropy = s_entropy == "low" ? EN_LOW : EN_HIGH;
+    chosen_language;
+    chosen_prosody;
 }
 
 

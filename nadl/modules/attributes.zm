@@ -1,0 +1,133 @@
+/******************************************************************************\
+FILE:           attributes.zm
+AUTHOR:         ZepMan 1.5.2
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Defines attributes for researcher, participant, experiment, group and session
+records in the database.
+
+Run ZepMan: Script > Define Attributes to import attributes from this file
+into the database (this is also done on-the-fly when running an experiment).
+
+Run ZepMan: Script > Create Module attributes.zm to recreate this file from
+the database.
+
+\******************************************************************************/
+
+
+// Attribute definitions to be used for participant records.
+FieldDefInit[] participant_attribute_defs =
+{
+    {
+        // Attribute id.
+        "prosody",
+
+        // Attribute type.
+        FIELD_TYPE_ENUM,
+
+        // Attribute description.
+        "functional or emphasized",
+
+        // Set if attribute may identify a person.
+        false,
+
+        // Set if attribute may contain sensitive information.
+        false,
+
+        // Set to exclude attribute from export.
+        false,
+
+        // Set to show attribute in zepman record list.
+        false,
+
+        // Set if attribute is required for experiment.
+        true,
+
+        // Enumerator list.
+        "functional|emphasized"
+    },
+    {
+        // Attribute id.
+        "language",
+
+        // Attribute type.
+        FIELD_TYPE_ENUM,
+
+        // Attribute description.
+        "The language that is being used",
+
+        // Set if attribute may identify a person.
+        false,
+
+        // Set if attribute may contain sensitive information.
+        false,
+
+        // Set to exclude attribute from export.
+        false,
+
+        // Set to show attribute in zepman record list.
+        false,
+
+        // Set if attribute is required for experiment.
+        true,
+
+        // Enumerator list.
+        "l1|l2"
+    },
+    {
+        // Attribute id.
+        "entropy",
+
+        // Attribute type.
+        FIELD_TYPE_ENUM,
+
+        // Attribute description.
+        "Low or high entropy",
+
+        // Set if attribute may identify a person.
+        false,
+
+        // Set if attribute may contain sensitive information.
+        false,
+
+        // Set to exclude attribute from export.
+        false,
+
+        // Set to show attribute in zepman record list.
+        false,
+
+        // Set if attribute is required for experiment.
+        true,
+
+        // Enumerator list.
+        "low|high"
+    },
+}
+
+
+// Attribute definitions to be used for session records. Session record
+// attributes serve as experiment script arguments.
+FieldDefInit[] session_attribute_defs =
+{
+}
+
+
+// Attribute definitions to be used for group records. Group record attributes
+// could be used to specify the levels of between-subjects factors.
+FieldDefInit[] group_attribute_defs =
+{
+}
+
+
+// Attribute definitions to be used for experiment records.
+FieldDefInit[] experiment_attribute_defs =
+{
+}
+
+
+// Attribute definitions to be used for researcher records.
+FieldDefInit[] researcher_attribute_defs =
+{
+}

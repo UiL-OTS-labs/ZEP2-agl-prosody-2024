@@ -22,7 +22,7 @@ Experiment experiment
 {
     on_event:entry()
     {
-        test::init_conditions_from_test_group(selected_group);
+        test::init_conditions(selected_group);
         if (have_flag("short")) { // for testing purposes
             test::NUM_TRAININGS_ITEMS = 12;
         }
@@ -30,6 +30,11 @@ Experiment experiment
         test::prepare_training_items();
 
         test::prepare_test_lists();
+
+        if (have_flag("print-conditions")) {
+            test::print_conditions();
+        }
+
 
         if (have_flag("print-items") ||
             have_flag("print-test-items") ||
