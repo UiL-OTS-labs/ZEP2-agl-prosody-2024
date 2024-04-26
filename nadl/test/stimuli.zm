@@ -45,6 +45,19 @@ void print_train_items(TrainItem[] items, bool header) {
     }
 }
 
+/**
+ * Appends postfix to the filename of the stimulus. postfix should be _emphasized
+ * or _functional, it's not .wav.
+ */
+void append_train_item_postfix(TrainItem[] items, string postfix)
+{
+    int i;
+    while (i < items.size) {
+        items[i].sndfn += postfix;
+        i++;
+    }
+}
+
 
 /*
  * The training stimuli are presented in these 3 lists, each
@@ -304,8 +317,12 @@ void prepare_training_items()
         else
             training_items = items_low_l2;
     }
+    
+    string postfix = chosen_prosody == PRO_FUNCTIONAL ? "_functional" : "_emphasized";
+    append_train_item_postfix(training_items, postfix);
 
     prepare_training_lists(training_items);
+
 }
 
 /*
