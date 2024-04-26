@@ -41,17 +41,18 @@ void init_conditions(TestGroup group) {
 
     string s_entropy = expdb.participant.get_enum_field("entropy");
     string s_lang = expdb.participant.get_enum_field("language");
-    string s_prosody = expdb.participant.get_enum_field("entropy");
+    string s_prosody = expdb.participant.get_enum_field("prosody");
     chosen_entropy = s_entropy == "low" ? EN_LOW : EN_HIGH;
-    chosen_language = s_lang == "L1" ? LANG_L1 : LANG_L2 ; 
+    chosen_language = s_lang == "l1" ? LANG_L1 : LANG_L2 ; 
     chosen_prosody = s_prosody == "emphasized" ? PRO_EMPHASIZED : PRO_FUNCTIONAL;
 }
 
 
 void print_chosen_conditions(TestGroup group) {
     println("group = " + group);
-    println("chosen_entropy = " + chosen_entropy);
+    println("chosen_counter_prosody = " + chosen_prosody);
     println("chosen_language = " + chosen_language);
+    println("chosen_entropy = " + chosen_entropy);
     println("chosen_counter_balance_order = " + chosen_cb_order);
 }
 

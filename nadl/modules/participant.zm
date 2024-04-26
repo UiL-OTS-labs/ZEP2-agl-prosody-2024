@@ -1,0 +1,90 @@
+/******************************************************************************\
+FILE:           participant.zm
+AUTHOR:         John Doe <jdoe@silly-research.org>
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Participant record preparation:
+- initialization of fixed participant record attributes
+- checking participant record attributes
+
+\******************************************************************************/
+
+
+// Initializes fixed participant record attributes, if applicable.
+// All attributes must have a definition in the database.
+// This function is optional.
+//
+// md: this function overwrites fields set when editing the participant.
+// hence we don't set anything at all.
+int create_participant_fields()
+{
+    // println("Setting participant fields");
+    // Set attribute "language" to "l1".
+    // expdb.participant.set_enum_field("prosody", "functional");
+    // expdb.participant.set_enum_field("language", "l1");
+    // expdb.participant.set_enum_field("entropy", "low");
+
+    return OK;
+}
+
+string[] valid_prosody = {
+    "functional",
+    "emphasized"
+};
+
+string[] valid_language= {
+    "l1",
+    "l2"
+};
+
+string[] valid_entropy= {
+    "low",
+    "high"
+};
+
+bool in_valid(string[] valid, string probe) {
+    int i;
+    while (i < valid.size) {
+        if (probe == valid[i]) {
+            return true;
+        }
+        i++;
+    }
+    return false;
+}
+
+
+// Checks value of required participant record attributes, if applicable.
+// This function is optional.
+int check_participant_fields()
+{
+    println("Checking participant fields");
+
+    // Check if attributes prosody, language and entropy are set.
+    if (!expdb.participant.has_field("prosody")) return ERROR;
+    if (!expdb.participant.has_field("language")) return ERROR;
+    if (!expdb.participant.has_field("entropy")) return ERROR;
+
+    // Also check if attributes are valid.
+    string prosody = expdb.participant.get_enum_field("prosody");
+    if (!in_valid(valid_prosody, prosody)) {
+        print_error(prosody + "is not valid for prosody\n");
+        return ERROR;
+    }
+    
+    string language = expdb.participant.get_enum_field("language");
+    if (!in_valid(valid_language, language)) {
+        print_error(language + "is not valid for language\n");
+        return ERROR;
+    }
+    
+    string entropy = expdb.participant.get_enum_field("entropy");
+    if (!in_valid(valid_entropy, entropy)) {
+        print_error(entropy + "is not valid for entropy");
+        return ERROR;
+    }
+
+    return OK;
+}
