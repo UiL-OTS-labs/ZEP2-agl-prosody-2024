@@ -58,6 +58,18 @@ void append_train_item_postfix(TrainItem[] items, string postfix)
     }
 }
 
+/**
+ * like append_train_item_postfix but for test items
+ */
+void append_test_item_postfix(TestItem[] items, string postfix)
+{
+    int i;
+    while (i < items.size) {
+        items[i].fn += postfix;
+        i++;
+    }
+}
+
 
 /*
  * The training stimuli are presented in these 3 lists, each
@@ -306,16 +318,20 @@ void prepare_training_items()
     TrainItem[] training_items;
 
     if (chosen_entropy == EN_HIGH) {
-        if (chosen_language == LANG_L1)
+        if (chosen_language == LANG_L1) {
             training_items = items_high_l1;
-        else 
+        }
+        else {
             training_items = items_high_l2;
+        }
     }
     else {
-        if (chosen_language == LANG_L1)
+        if (chosen_language == LANG_L1) {
             training_items = items_low_l1;
-        else
+        }
+        else {
             training_items = items_low_l2;
+        }
     }
     
     string postfix = chosen_prosody == PRO_FUNCTIONAL ? "_functional" : "_emphasized";
@@ -506,6 +522,11 @@ prepare_test_stims() {
  * Prepares the list for the three test blocks.
  */
 void prepare_test_lists () {
-
     prepare_test_stims();
+
+    string postfix = chosen_prosody == PRO_FUNCTIONAL ? "_functional" : "_emphasized";
+
+    append_test_item_postfix(test_items1, postfix);
+    append_test_item_postfix(test_items2, postfix);
+    append_test_item_postfix(test_items3, postfix);
 }
