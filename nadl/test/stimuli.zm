@@ -34,12 +34,13 @@ void print_train_items(TrainItem[] items, bool header) {
 
     while (i < items.size) {
         TrainItem it = items[i];
-        println("" + it.id + "\t"
-                   + it.block + "\t"
-                   + it.nth_rep + "\t"
-                   + it.entropy + "\t"
-                   + it.language + "\t"
-                   + it.sndfn
+        println(//"" + it.id + "\t"
+                //   + it.block + "\t"
+                //   + it.nth_rep + "\t"
+                //   + it.entropy + "\t"
+                //   + it.language + "\t"
+                // + it.sndfn
+                it.sndfn
                );
         i++;
     }
@@ -229,7 +230,7 @@ bool
 train_items_append_block(TrainItem[] output, TrainItem[] input, int block) {
 
     bool meets_constraints = false;
-    int num_tries = 1000;
+    int num_tries = 10000;
     int num = 0;
 
     while (!meets_constraints && num < num_tries) {
@@ -273,6 +274,11 @@ train_items_append_block(TrainItem[] output, TrainItem[] input, int block) {
         num++;
         meets_constraints = check_train_items(output);
     }
+
+    if (!meets_constraints)
+        print_error("meets_constraints = " + meets_constraints + "\n");
+    else
+        println("constraints met after " + num + " tries.");
 
     return meets_constraints;
 }
