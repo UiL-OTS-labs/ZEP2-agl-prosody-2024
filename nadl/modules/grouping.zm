@@ -17,10 +17,7 @@ HISTORY:
 // Symbolic definition of groups.
 enum TestGroup
 {
-    // Counter balance order A
-    cba,        // low entropy language l2
-    // Counter balance order B
-    cbb,        // low entropy language l2
+    ALL,
 }
  
  

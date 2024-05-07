@@ -26,18 +26,11 @@ enum CondProsody {
     PRO_EMPHASIZED,
 }
 
-enum CondCB { // CounterBalance
-    CBA,
-    CBB
-}
-
 CondEntropy     chosen_entropy;
 CondLang        chosen_language;
-CondCB          chosen_cb_order;
 CondProsody     chosen_prosody;
 
 void init_conditions(TestGroup group) {
-    chosen_cb_order = group == cba ? CBA : CBB;
 
     string s_entropy = expdb.participant.get_enum_field("entropy");
     string s_lang = expdb.participant.get_enum_field("language");
@@ -53,6 +46,5 @@ void print_chosen_conditions(TestGroup group) {
     println("chosen_counter_prosody = " + chosen_prosody);
     println("chosen_language = " + chosen_language);
     println("chosen_entropy = " + chosen_entropy);
-    println("chosen_counter_balance_order = " + chosen_cb_order);
 }
 
