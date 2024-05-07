@@ -60,7 +60,6 @@ bool in_valid(string[] valid, string probe) {
 // This function is optional.
 int check_participant_fields()
 {
-    println("Checking participant fields");
 
     // Check if attributes prosody, language and entropy are set.
     if (!expdb.participant.has_field("prosody")) return ERROR;
